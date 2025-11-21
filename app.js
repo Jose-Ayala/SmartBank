@@ -30,6 +30,7 @@ app.post('/create-checkout-session', async (req, res) => {
     try {
         // Get the deposit amount from the JSON body
         const userAmount = req.body.amount;
+        const productName = req.body.name
 
         // Convert Dollars to Cents as requied by Stripe
         const amountInCents = Math.round(Number(userAmount) * 100);
@@ -47,7 +48,7 @@ app.post('/create-checkout-session', async (req, res) => {
                 price_data: {
                     currency: 'usd',
                     product_data: {
-                        name: 'SmartBank Deposit',
+                        name: `SmartBank Opening Deposit - ${productName}`,
                         description: `Account deposit of $${userAmount}`,
                     },
                     unit_amount: amountInCents,
@@ -57,7 +58,7 @@ app.post('/create-checkout-session', async (req, res) => {
             mode: 'payment',
             customer_email: 'john.doe@email.com',
 
-            success_url: `http://localhost:5173/payment-success`,
+            success_url: `http://localhost:5173/payment-success?name=${encodeURIComponent(productName)}&amount=${userAmount}`,
             cancel_url: `http://localhost:5173/payment-cancel`,
         });
 
