@@ -35,13 +35,6 @@ app.post('/create-checkout-session', async (req, res) => {
         // Convert Dollars to Cents as requied by Stripe
         const amountInCents = Math.round(Number(userAmount) * 100);
 
-        // Error handling
-        if (!userAmount || amountInCents < 10000) {
-            return res.status(400).json({
-                error: 'Minimum Deposit of at least $100.00'
-            });
-        }
-
         // Create the Stripe Session
         const session = await stripe.checkout.sessions.create({
             line_items: [{
